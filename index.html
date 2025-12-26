@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ถามจริงๆ นะ?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #ffe6eb;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* ห้ามเลื่อนหน้าจอ */
+            margin: 0;
+        }
+
+        /* รูปภาพหมี */
+        .gif-container img {
+            width: 220px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #ff4757;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .btn-group {
+            position: relative;
+            width: 100%;
+            height: 200px; /* พื้นที่สำหรับปุ่ม */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ให้ปุ่มเริ่มจากข้างบน */
+            gap: 20px;
+        }
+
+        button {
+            font-family: 'Prompt', sans-serif;
+            font-size: 1.5rem;
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute; /* เพื่อให้ขยับได้อิสระ */
+        }
+
+        /* ปุ่มรัก (พระเอกของเรา) */
+        #yesBtn {
+            background-color: #ff4757;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            z-index: 100; /* อยู่บนสุดเสมอ */
+            /* จัดกึ่งกลาง */
+            left: 50%;
+            transform: translateX(-150%); /* เยื้องซ้ายนิดหน่อยตอนแรก */
+        }
+
+        /* ปุ่มไม่รัก (ตัวประกอบที่จะหายไป) */
+        #noBtn {
+            background-color: #dfe4ea;
+            color: #2f3542;
+            left: 50%;
+            transform: translateX(50%); /* เยื้องขวานิดหน่อยตอนแรก */
+        }
+
+        /* หน้าจอตอนจบ */
+        .success-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #ffe6eb;
+            z-index: 200;
+        }
+
+        .success-screen h1 {
+            font-size: 3rem;
+            color: #ff4757;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-content" style="text-align: center;">
+        <div class="gif-container">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExajFqOGk5eHRqOGk5eHRqOGk5eHRqOGk5eHRqOGk5eHRqOGk5eCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+        </div>
+        <h1>แพทตี้รักโอ๊คไหม? (ตอบดีๆ นะ)</h1>
+        
+        <div class="btn-group">
+            <button id="yesBtn" style="position: static; transform: none;">รักสิ ❤️</button>
+            <button id="noBtn" style="position: static; transform: none;">ไม่รัก 😝</button>
+        </div>
+    </div>
+
+    <div class="success-screen" id="successScreen">
+        <div class="gif-container">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDN6eHRqOGk5eHRqOGk5eHRqOGk5eHRqOGk5eHRqOGk5eCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/26FLdmIp6wJr91JAI/giphy.gif" alt="Hugging Bear">
+        </div>
+        <h1>ร้ากกกแพทตี้เหมือนกันนน 😘</h1>
+        <p>น่ารักที่สุดในโลกเลยยยยครับ</p>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const successScreen = document.getElementById('successScreen');
+        const mainContent = document.getElementById('main-content');
+        
+        let yesScale = 1; // ขนาดเริ่มต้นของปุ่มรัก
+
+        // ฟังก์ชันกดปุ่มรัก
+        yesBtn.addEventListener('click', () => {
+            successScreen.style.display = 'flex';
+            mainContent.style.display = 'none';
+        });
+
+        // ฟังก์ชันหนีของปุ่มไม่รัก
+        function moveNoBtn() {
+            // 1. ย้ายปุ่มไม่รักไปที่สุ่ม
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed'; // เปลี่ยนเป็น fixed เพื่อให้หนีไปทั่วจอได้
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+
+            // 2. ขยายปุ่มรักให้ใหญ่ขึ้นเรื่อยๆ
+            yesScale += 0.5; // เพิ่มขนาดทีละ 0.5 เท่า (โตไวมาก)
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            // 3. ถ้าปุ่มรักใหญ่เกินไป ให้ซ่อนปุ่มไม่รักไปเลย
+            if (yesScale > 8) {
+                noBtn.style.display = 'none'; // หายไปเลย
+                yesBtn.innerText = "รักโอ๊คได้รึยังงง ❤️";
+            }
+        }
+
+        // อีเวนต์สำหรับ Desktop (เอาเมาส์ไปโดนก็หนี)
+        noBtn.addEventListener('mouseover', moveNoBtn);
+
+        // อีเวนต์สำหรับ Mobile (แตะปุ๊บหนีปั๊บ กดไม่ได้แน่นอน)
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // ห้ามกด
+            moveNoBtn();
+        });
+
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoBtn(); // กันเหนียวสำหรับคนคลิกไว
+        });
+
+    </script>
+</body>
+</html>
